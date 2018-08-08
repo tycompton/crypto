@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Symbol:</strong>
+  <%= @money.symbol %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @money.user_id %>
+</p>
+
+<p>
+  <strong>Cost per:</strong>
+  <%= @money.cost_per %>
+</p>
+
+<p>
+  <strong>Amount owned:</strong>
+  <%= @money.amount_owned %>
+</p>
+
+<%= link_to 'Edit', edit_money_path(@money) %> |
+<%= link_to 'Back', money_index_path %>
