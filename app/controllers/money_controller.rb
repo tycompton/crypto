@@ -1,10 +1,18 @@
 class MoneyController < ApplicationController
   before_action :set_money, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
 
   # GET /money
   # GET /money.json
   def index
     @money = Money.all
+    require 'net/http'
+    require 'json'
+    @url = 'https://api.coinmarketcap.com/v1/ticker/'
+    @uri = URI(@url)
+    @response = Net::HTTP.get(@uri)
+    @lookup_money = JSON.parse(@response)
   end
 
   # GET /money/1
@@ -70,5 +78,10 @@ class MoneyController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def money_params
       params.require(:money).permit(:symbol, :user_id, :cost_per, :amount_owned)
+    end
+
+    def correct_user
+      @correct = current_user.money.find_by(id: params[:id])
+      redirect_to money_index_path, notice: "Not authorized to edit this entry" if @correct.nil?
     end
 end

@@ -1,33 +1,55 @@
-<p id="notice"><%= notice %></p>
+<h1>List Portfolio</h1>
+<br/>
 
-<h1>Money</h1>
-
-<table>
+<table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <th>Symbol</th>
-      <th>User</th>
-      <th>Cost per</th>
+      <th>Name</th>
+      <th>Current Price</th>
+      <th>Rank</th>
+      <th>1 HR Change</th>
+      <th>24 HR Change</th>
+      <th>7 Day Change</th>
+      <th>Current Value</th>
+      <th>Total Paid</th>
+      <th>Profit/Loss</th>
+      <th>Cost Paid Per</th>
       <th>Amount owned</th>
-      <th colspan="3"></th>
     </tr>
   </thead>
 
   <tbody>
     <% @money.each do |money| %>
-      <tr>
-        <td><%= money.symbol %></td>
-        <td><%= money.user_id %></td>
-        <td><%= money.cost_per %></td>
-        <td><%= money.amount_owned %></td>
-        <td><%= link_to 'Show', money %></td>
-        <td><%= link_to 'Edit', edit_money_path(money) %></td>
-        <td><%= link_to 'Destroy', money, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+      <% if money.user_id == current_user.id %>
+        <% if money.symbol %>
+          <% money.symbol = money.symbol.upcase %>
+        <% end %>
+        <tr>
+        <% for x in @lookup_money %>
+          <% if money.symbol == x["symbol"] %>
+            <td><%= link_to x["name"], money %></td>
+            <td>$<%= x["price_usd"] %></td>
+            <td><%= x["rank"] %></td>
+            <td><%= x["percent_change_1h"] %>%</td>
+            <td><%= x["percent_change_24h"] %>%</td>
+            <td><%= x["percent_change_7d"] %>%</td>
+            <td>$<%= x["price_usd"].to_d * money.amount_owned %></td>
+            <td>$<%= (money.cost_per * money.amount_owned) %></td>
+            <td>$<%= (x["price_usd"].to_d * money.amount_owned) - (money.cost_per * money.amount_owned) %></td>
+          <% end %>
+        <% end %>
+
+          <td>$<%= money.cost_per %></td>
+          <td><%= money.amount_owned %></td>
+        </tr>
+      <% end %>
     <% end %>
   </tbody>
 </table>
 
-<br>
+<br/>
+<br/>
 
-<%= link_to 'New Money', new_money_path %>
+<strong>Portfolio Profit/Loss: </strong> <%=  %>
+
+<%= link_to 'New Money', new_money_path, class: "btn btn-default" %>
